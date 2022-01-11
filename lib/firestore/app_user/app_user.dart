@@ -97,7 +97,11 @@ class AppUserRepository {
       query = queryBuilder(query)!;
     }
     final qs = await query.get();
-    return qs.docs.map((qds) => qds.data).toList();
+    final result = qs.docs.map((qds) => qds.data).toList();
+    if (sort != null) {
+      result.sort(sort);
+    }
+    return result;
   }
 
   /// AppUser 一覧を購読する。
@@ -112,7 +116,13 @@ class AppUserRepository {
       query = queryBuilder(query)!;
     }
     final collectionStream = query.snapshots();
-    return collectionStream.map((qs) => qs.docs.map((qds) => qds.data).toList());
+    return collectionStream.map((qs) {
+      final result = qs.docs.map((qds) => qds.data).toList();
+      if (sort != null) {
+        result.sort(sort);
+      }
+      return result;
+    });
   }
 
   /// 指定した AppUser を取得する。
